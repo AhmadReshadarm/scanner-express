@@ -1,9 +1,8 @@
-import { WishlistController } from "./wishlist.controller";
+import { ScannerController } from './scanner.controller';
+import { WishlistController } from './wishlist.controller';
 
 const loadControllers = () => {
-  return [
-    WishlistController
-  ];
-}
+  return [WishlistController, ScannerController];
+};
 
 export default loadControllers;
