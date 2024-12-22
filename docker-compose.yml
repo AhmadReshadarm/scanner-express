@@ -1,6 +1,6 @@
 services:
   db:
-    image: mysql:5.7
+    image: mysql
     command: mysqld --default-authentication-plugin=mysql_native_password
     restart: always
     expose:
@@ -10,6 +10,7 @@ services:
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: root
     volumes:
       - '/var/lib/mysql-data:/var/lib/mysql'
   phpmyadmin:
