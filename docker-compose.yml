@@ -2,7 +2,11 @@ version: '2'
 services:
   db:
     image: mysql
-    command: mysqld --default-authentication-plugin=mysql_native_password
+    command: [
+        'sh',
+        '-c',
+        'mysql_install_db --user=mysql && mysqld --default-authentication-plugin=mysql_native_password',
+      ] #mysqld --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
     expose:
       - '3306'
