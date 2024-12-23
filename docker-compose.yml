@@ -1,3 +1,4 @@
+version: '2'
 services:
   db:
     image: mysql
@@ -8,8 +9,8 @@ services:
     ports:
       - '3306:3306'
     environment:
-      MYSQL_DATABASE: scanner #${MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: '1234' #${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - '/var/lib/mysql-data:/var/lib/mysql'
   phpmyadmin:
@@ -18,7 +19,7 @@ services:
     ports:
       - 8080:80
     environment:
-      PMA_HOST: 213.139.210.203 #${MYSQL_HOST}
+      PMA_HOST: ${MYSQL_HOST}
       PMA_PORT: 3306
   # authorization:
   #   build:
