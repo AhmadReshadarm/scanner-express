@@ -9,9 +9,13 @@ services:
     ports:
       - '3306:3306'
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
+      - MYSQL_ROOT_PASSWORD="secret"
+      - MYSQL_USER="root"
+      - MYSQL_PASSWORD="secret"
+      - MYSQL_DATABASE="scanner"
+      # MYSQL_DATABASE: ${MYSQL_DATABASE}
+      # MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      # MYSQL_USER: ${MYSQL_USER}
     volumes:
       - '/var/lib/mysql-data:/var/lib/mysql'
   phpmyadmin:
