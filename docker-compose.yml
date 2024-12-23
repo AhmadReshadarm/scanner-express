@@ -3,7 +3,7 @@ services:
   db:
     image: mysql
     # command:  mysqld --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
+    restart: always
     expose:
       - '3306'
     ports:
@@ -11,8 +11,8 @@ services:
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    # volumes:
-    #   - '/var/lib/mysql-data:/var/lib/mysql'
+    volumes:
+      - '/var/lib/mysql-data:/var/lib/mysql'
   phpmyadmin:
     image: phpmyadmin:latest
     restart: always
@@ -107,7 +107,7 @@ services:
   #   - '4010:4010'
   # expose:
   #   - '4010'
-# volumes:
-#   db_data:
+volumes:
+  db_data:
 # images_data:
 #   driver: local
