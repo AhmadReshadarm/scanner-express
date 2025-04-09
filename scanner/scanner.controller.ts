@@ -3,11 +3,14 @@ import { singleton } from 'tsyringe';
 import { Controller, Delete, Get, Post, Put } from '../core/decorators';
 import { HttpStatus } from '../core/lib/http-status';
 import { WishlistService } from './wishlist.service';
+import { validation } from '../core/lib/validator';
+import { Scanner, Tag } from '../core/entities';
+import { TagService } from './tag.service';
 
 @singleton()
 @Controller('/scanner')
 export class ScannerController {
-  constructor(private scannerService: WishlistService) {}
+  constructor(private scannerService: WishlistService, private tagService: TagService) {}
 
   @Get()
   // @Middleware([verifyToken, isAdmin])
@@ -23,8 +26,11 @@ export class ScannerController {
 
   @Post()
   async createScanners(req: Request, resp: Response) {
+    const { tags } = req.body;
     try {
-      const created = await this.scannerService.createScanner(req.body);
+      const newScanner = await validation(new Scanner(req.body));
+      tags ? (newScanner.tags = await this.tagService.getTagsByIds(tags.map((tag: Tag) => String(tag)))) : null;
+      const created = await this.scannerService.createScanner(newScanner);
 
       resp.status(HttpStatus.CREATED).json(created);
     } catch (error) {
@@ -35,8 +41,12 @@ export class ScannerController {
   @Put(':id')
   async updateScanner(req: Request, resp: Response) {
     const { id } = req.params;
+    const { tags } = req.body;
     try {
-      const updated = await this.scannerService.updateScanner(id, req.body);
+      const newScanner = new Scanner(req.body);
+
+      tags ? (newScanner.tags = await this.tagService.getTagsByIds(tags.map((tag: Tag) => String(tag)))) : null;
+      const updated = await this.scannerService.updateScanner(id, newScanner);
 
       resp.status(HttpStatus.CREATED).json(updated);
     } catch (error) {

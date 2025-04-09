@@ -29,9 +29,11 @@ export interface ScannerDTO {
 }
 
 export interface ScannerQueryDTO {
+  readonly tags?: string | string[];
+  readonly tag?: string;
   id?: string;
   qrCode?: string;
-  sortBy?: 'productId' | 'userId';
+  sortBy?: 'id';
   orderBy?: 'DESC' | 'ASC';
   limit?: number;
   offset?: number;

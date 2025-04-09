@@ -14,9 +14,8 @@ export class WishlistController {
   @Middleware([verifyToken, isAdmin])
   async getWishlists(req: Request, resp: Response) {
     try {
-      const wishlists = await this.wishlistService.getWishlists(req.query);
-
-      resp.json(wishlists);
+      // const wishlists = await this.wishlistService.getWishlists(req.query);
+      // resp.json(wishlists);
     } catch (error) {}
   }
 
@@ -24,9 +23,8 @@ export class WishlistController {
   async getWishlist(req: Request, resp: Response) {
     const { id } = req.params;
     try {
-      const wishlist = await this.wishlistService.getWishlist(id);
-
-      resp.json(wishlist);
+      // const wishlist = await this.wishlistService.getWishlist(id);
+      // resp.json(wishlist);
     } catch (error) {
       resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
@@ -36,9 +34,8 @@ export class WishlistController {
   async getWishlistProducts(req: Request, resp: Response) {
     const { id } = req.params;
     try {
-      const products = await this.wishlistService.getWishlistProducts(id);
-
-      resp.json(products);
+      // const products = await this.wishlistService.getWishlistProducts(id);
+      // resp.json(products);
     } catch (error) {
       resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
@@ -47,9 +44,8 @@ export class WishlistController {
   @Post()
   async createWishlist(req: Request, resp: Response) {
     try {
-      const created = await this.wishlistService.createWishlist();
-
-      resp.status(HttpStatus.CREATED).json(created);
+      // const created = await this.wishlistService.createWishlist();
+      // resp.status(HttpStatus.CREATED).json(created);
     } catch (error) {
       resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
@@ -59,9 +55,8 @@ export class WishlistController {
   async updateWishlist(req: Request, resp: Response) {
     const { id } = req.params;
     try {
-      const updated = await this.wishlistService.updateWishlist(id, req.body);
-
-      resp.status(HttpStatus.CREATED).json(updated);
+      // const updated = await this.wishlistService.updateWishlist(id, req.body);
+      // resp.status(HttpStatus.CREATED).json(updated);
     } catch (error) {
       resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
@@ -72,9 +67,8 @@ export class WishlistController {
   async removeWishlist(req: Request, resp: Response) {
     const { id } = req.params;
     try {
-      const removed = await this.wishlistService.removeWishlist(id);
-
-      resp.status(HttpStatus.OK).json(removed);
+      // const removed = await this.wishlistService.removeWishlist(id);
+      // resp.status(HttpStatus.OK).json(removed);
     } catch (error) {
       resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
     }

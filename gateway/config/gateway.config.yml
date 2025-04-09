@@ -13,7 +13,7 @@ apiEndpoints:
     paths: ['/users*', '/auth*', '/admin*']
   catalog:
     host: ${HOST}
-    paths: ['/products*', '/tags*', '/sizes*', '/categories*', '/brands*', '/colors*', '/parameters*']
+    paths: ['/products*', '/sizes*', '/categories*', '/brands*', '/colors*', '/parameters*']
   images:
     host: ${HOST}
     paths: ['/images*']
@@ -31,7 +31,7 @@ apiEndpoints:
     paths: ['/api-docs*']
   wishlists:
     host: ${HOST}
-    paths: ['/wishlists*', '/scanner*']
+    paths: ['/scanner*', '/tags*']
   banners:
     host: ${HOST}
     paths: ['/slides*', '/advertisements*']
