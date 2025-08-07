@@ -69,9 +69,9 @@ export class ScannerController {
     }
   }
 
-  @Get('bar/:barCode')
+  @Get('bar')
   async getScannerByBarCode(req: Request, resp: Response) {
-    const { barCode } = req.params;
+    const { barCode, email } = req.body;
     try {
       const isValid = await this.scannerService.getScannbyBardCode(barCode);
       if (!isValid) {
