@@ -69,7 +69,7 @@ export class ScannerController {
     }
   }
 
-  @Get(':barCode')
+  @Get('bar/:barCode')
   async getScannerByBarCode(req: Request, resp: Response) {
     const { barCode } = req.params;
     try {
