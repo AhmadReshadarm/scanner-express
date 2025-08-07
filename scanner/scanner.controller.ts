@@ -54,6 +54,36 @@ export class ScannerController {
     }
   }
 
+  @Get(':qrCode')
+  async getScannerByQrCode(req: Request, resp: Response) {
+    const { qrCode } = req.params;
+    try {
+      const isValid = await this.scannerService.getScannbyQrCode(qrCode);
+      if (!isValid) {
+        resp.status(HttpStatus.FORBIDDEN).json({ message: 'not a valid code' });
+        return;
+      }
+      resp.status(HttpStatus.OK).json({ message: 'code is genuine' });
+    } catch (error) {
+      resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+  }
+
+  @Get(':barCode')
+  async getScannerByBarCode(req: Request, resp: Response) {
+    const { barCode } = req.params;
+    try {
+      const isValid = await this.scannerService.getScannbyBardCode(barCode);
+      if (!isValid) {
+        resp.status(HttpStatus.FORBIDDEN).json({ message: 'not a valid code' });
+        return;
+      }
+      resp.status(HttpStatus.OK).json({ message: 'code is genuine' });
+    } catch (error) {
+      resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+  }
+
   @Delete(':id')
   async removeScanner(req: Request, resp: Response) {
     const { id } = req.params;

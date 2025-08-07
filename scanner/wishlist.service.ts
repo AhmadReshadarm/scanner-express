@@ -1,7 +1,6 @@
 import { singleton } from 'tsyringe';
 import { DataSource, Equal, Repository } from 'typeorm';
 import { Scanner } from '../core/entities';
-import { WishlistProductService } from './wishlist-product.service';
 import { ScannerDTO, ScannerQueryDTO } from './wishlist.dtos';
 import { PaginationDTO } from '../core/lib/dto';
 
@@ -94,6 +93,14 @@ export class WishlistService {
       ...scanner,
       ...scannerDTO,
     });
+  }
+
+  async getScannbyQrCode(qrCode: string) {
+    return await this.scannerRepository.findOneOrFail({ where: { qrCode: Equal(qrCode) } });
+  }
+
+  async getScannbyBardCode(barCode: string) {
+    return await this.scannerRepository.findOneOrFail({ where: { barCode: Equal(barCode) } });
   }
 
   // async updateWishlist(id: string, whishlistDTO: Wishlist) {
