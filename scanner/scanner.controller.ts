@@ -65,7 +65,7 @@ export class ScannerController {
       if (!isValid) {
         // ---------------------------
         const emailNotValidPayload = {
-          to: `${req.query.valst}`, // vlast is the user email
+          to: `${req.query.valst}`, // valst is the user email
           subject: `ПРОВЕРКА НА ОРИГИНАЛЬНОСТЬ`,
           html: notValid,
         };
