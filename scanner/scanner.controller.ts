@@ -95,7 +95,7 @@ export class ScannerController {
     }
   }
 
-  @Get('byScan')
+  @Post('byScan')
   async getScannerByBarCode(req: Request, resp: Response) {
     const { code } = req.body;
 
