@@ -57,11 +57,11 @@ export class WishlistService {
 
   async getScannbyQrCode(queryParams: CodeDTO) {
     const { valmod } = queryParams;
-    return await this.scannerRepository.findOne({ where: { qrCode: valmod } });
+    return await this.scannerRepository.findOne({ where: { barCode: valmod } });
   }
 
-  async getScannbyBardCode(barCode: string) {
-    return await this.scannerRepository.findOne({ where: { barCode: Equal(barCode) } });
+  async getScannbyBardCode(code: string) {
+    return await this.scannerRepository.findOne({ where: { qrCode: Equal(`https://daull.ru/?code=${code}`) } });
   }
 
   async sendMail(options: MailOptionsDTO) {
