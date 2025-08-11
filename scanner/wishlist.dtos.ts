@@ -53,3 +53,14 @@ export interface UserAuth {
   id: string;
   role: Role;
 }
+
+export interface CodeDTO {
+  readonly valst?: string;
+  readonly valmod?: string;
+}
+
+export interface MailOptionsDTO {
+  to: string;
+  subject: string;
+  html: string;
+}

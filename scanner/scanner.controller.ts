@@ -6,6 +6,7 @@ import { WishlistService } from './wishlist.service';
 import { validation } from '../core/lib/validator';
 import { Scanner, Tag } from '../core/entities';
 import { TagService } from './tag.service';
+import { EmptyEmail, genuineEmail, notGenuinEmail } from './generateEmail';
 
 @singleton()
 @Controller('/scanner')
@@ -54,26 +55,52 @@ export class ScannerController {
     }
   }
 
-  @Get(':qrCode')
+  @Get('byType')
   async getScannerByQrCode(req: Request, resp: Response) {
-    const { qrCode } = req.params;
+    const basic: string = EmptyEmail();
+    const notValid: string = notGenuinEmail();
+    const valid: string = genuineEmail();
     try {
-      const isValid = await this.scannerService.getScannbyQrCode(qrCode);
+      const isValid = await this.scannerService.getScannbyQrCode(req.query);
       if (!isValid) {
+        // ---------------------------
+        const emailNotValidPayload = {
+          to: `${req.query.valst}`, // vlast is the user email
+          subject: `ПРОВЕРКА НА ОРИГИНАЛЬНОСТЬ`,
+          html: notValid,
+        };
+        await this.scannerService.sendMail(emailNotValidPayload);
+        // -------------------------
         resp.status(HttpStatus.FORBIDDEN).json({ message: 'not a valid code' });
         return;
       }
+      // -------------------------
+      const emailValidPayload = {
+        to: `${req.query.valst}`,
+        subject: `ПРОВЕРКА НА ОРИГИНАЛЬНОСТЬ`,
+        html: valid,
+      };
+      await this.scannerService.sendMail(emailValidPayload);
+      // -------------------------
+      const generalEmailPayload = {
+        to: `${req.query.valst}`,
+        subject: `ПРОВЕРКА НА ОРИГИНАЛЬНОСТЬ`,
+        html: basic,
+      };
+      await this.scannerService.sendMail(generalEmailPayload);
+
       resp.status(HttpStatus.OK).json({ message: 'code is genuine' });
     } catch (error) {
       resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
   }
 
-  @Get('bar')
+  @Get('byScan')
   async getScannerByBarCode(req: Request, resp: Response) {
-    const { barCode, email } = req.body;
+    const { code } = req.body;
+
     try {
-      const isValid = await this.scannerService.getScannbyBardCode(barCode);
+      const isValid = await this.scannerService.getScannbyBardCode(code);
       if (!isValid) {
         resp.status(HttpStatus.FORBIDDEN).json({ message: 'not a valid code' });
         return;

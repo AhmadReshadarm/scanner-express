@@ -1,33 +1,22 @@
 import { singleton } from 'tsyringe';
 import { DataSource, Equal, Repository } from 'typeorm';
 import { Scanner } from '../core/entities';
-import { ScannerDTO, ScannerQueryDTO } from './wishlist.dtos';
+import { CodeDTO, MailOptionsDTO, ScannerDTO, ScannerQueryDTO } from './wishlist.dtos';
 import { PaginationDTO } from '../core/lib/dto';
+import { CustomExternalError } from '../core/domain/error/custom.external.error';
+import { ErrorCode } from '../core/domain/error/error.code';
+import { HttpStatus } from '../core/lib/http-status';
+import { createTransport, Transporter } from 'nodemailer';
+import { MAIL_FROM, transportConfig } from './config';
 
 @singleton()
 export class WishlistService {
-  // private wishlistRepository: Repository<Wishlist>;
-  // private wishlistProductRepository: Repository<WishlistProduct>;
   private scannerRepository: Repository<Scanner>;
-
+  private smptTransporter: Transporter;
   constructor(dataSource: DataSource) {
-    // this.wishlistRepository = dataSource.getRepository(Wishlist);
-    // this.wishlistProductRepository = dataSource.getRepository(WishlistProduct);
     this.scannerRepository = dataSource.getRepository(Scanner);
+    this.smptTransporter = createTransport(transportConfig);
   }
-
-  // async getWishlists(queryParams: WishlistQueryDTO): Promise<PaginationDTO<Wishlist>> {
-  //   const { sortBy = 'productId', orderBy = 'DESC', limit = 10, offset = 0 } = queryParams;
-
-  //   const queryBuilder = this.wishlistRepository.createQueryBuilder('wishlist');
-
-  //   queryBuilder.orderBy(`wishlist.${sortBy}`, orderBy).skip(offset).take(limit);
-
-  //   return {
-  //     rows: await queryBuilder.getMany(),
-  //     length: await queryBuilder.getCount(),
-  //   };
-  // }
 
   async getScans(queryParams: ScannerQueryDTO): Promise<PaginationDTO<Scanner>> {
     const { tags, tag, sortBy = 'id', orderBy = 'DESC', limit = 10, offset = 0 } = queryParams;
@@ -48,35 +37,6 @@ export class WishlistService {
     };
   }
 
-  // async getWishlist(id: string): Promise<Wishlist> {
-  //   const wishlist = await this.wishlistRepository.findOneOrFail({
-  //     where: {
-  //       id: Equal(id),
-  //     },
-  //     relations: ['items'],
-  //   });
-
-  //   return wishlist;
-  // }
-
-  // async getProductById(id: string): Promise<ProductDTO | undefined> {
-  //   try {
-  //     const res = await axios.get(`${process.env.CATALOG_DB}/products/${id}`);
-
-  //     return res.data;
-  //   } catch (e: any) {
-  //     if (e.name !== 'AxiosError' && e.response.status !== 404) {
-  //       throw new Error(e);
-  //     }
-  //   }
-  // }
-
-  // async createWishlist(): Promise<Wishlist> {
-  //   const wishlist = new Wishlist({ items: [] });
-
-  //   return this.wishlistRepository.save(wishlist);
-  // }
-
   async createScanner(scannerDTO: ScannerDTO): Promise<Scanner> {
     const scanner = new Scanner(scannerDTO);
 
@@ -95,74 +55,50 @@ export class WishlistService {
     });
   }
 
-  async getScannbyQrCode(qrCode: string) {
-    return await this.scannerRepository.findOneOrFail({ where: { qrCode: Equal(qrCode) } });
+  async getScannbyQrCode(queryParams: CodeDTO) {
+    const { valmod } = queryParams;
+
+    return await this.scannerRepository.findOneOrFail({ where: { qrCode: valmod } });
   }
 
   async getScannbyBardCode(barCode: string) {
     return await this.scannerRepository.findOneOrFail({ where: { barCode: Equal(barCode) } });
   }
 
-  // async updateWishlist(id: string, whishlistDTO: Wishlist) {
-  //   const wishlist = await this.wishlistRepository.findOneOrFail({
-  //     where: {
-  //       id: Equal(id),
-  //     },
-  //     relations: ['items'],
-  //   });
+  async sendMail(options: MailOptionsDTO) {
+    this.validateMailOptions(options);
 
-  //   wishlist.items.forEach(item => {
-  //     const curWishlistProduct = whishlistDTO.items.find(({ productId }) => item.productId === productId.toString());
+    let result: any;
+    await this.smptTransporter.sendMail(
+      {
+        ...options,
+        from: MAIL_FROM,
+      },
+      (err, info) => {
+        if (err) {
+          result = {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            response: {
+              message: `Mail was unsuccessfull to be sent to ${options.to}, ${err}`,
+            },
+          };
+        }
+        result = {
+          status: HttpStatus.OK,
+          response: {
+            message: `Mail was successfull to be sent to ${options.to}`,
+          },
+        };
+      },
+    );
+    return result;
+  }
 
-  //     if (!curWishlistProduct) {
-  //       this.wishlistProductRepository.remove(item);
-  //       wishlist.items = wishlist.items.filter(curItem => curItem.id !== item.id);
-  //     }
-  //   });
-
-  //   const items = [...wishlist.items];
-
-  //   for (const { productId } of whishlistDTO.items) {
-  //     const wishlistProduct = await this.wishlistProductRepository.findOneBy({
-  //       productId: Equal(productId),
-  //       wishlist: {
-  //         id: Equal(wishlist.id),
-  //       },
-  //     });
-
-  //     if (!wishlistProduct) {
-  //       const wishlistProductData = new WishlistProduct({ productId, wishlist });
-  //       const newWishlistProduct = await this.wishlistProductService.createWishlistProduct(wishlistProductData);
-  //       items.push(newWishlistProduct);
-  //     }
-  //   }
-
-  //   const products = [];
-
-  //   for (const item of items) {
-  //     const product = await this.getProductById(item.productId);
-
-  //     if (product) {
-  //       products.push(product);
-  //     }
-  //   }
-
-  //   return {
-  //     ...wishlist,
-  //     items,
-  //     products,
-  //   };
-  // }
-
-  // async removeWishlist(id: string) {
-  //   const wishlist = await this.wishlistRepository.findOneOrFail({
-  //     where: {
-  //       id: Equal(id),
-  //     },
-  //   });
-
-  //   return this.wishlistRepository.remove(wishlist);
-  // }
+  validateMailOptions(options: MailOptionsDTO) {
+    if (!options.to || !options.html || !options.subject) {
+      throw new CustomExternalError([ErrorCode.MAIL_OPTIONS], HttpStatus.BAD_REQUEST);
+    }
+  }
 
   async removeScanner(id: string) {
     const scanner = await this.scannerRepository.findOneOrFail({
@@ -173,22 +109,4 @@ export class WishlistService {
 
     return this.scannerRepository.remove(scanner);
   }
-
-  // async getWishlistProducts(id: string) {
-  //   const wishlist = await this.getWishlist(id);
-  //   const products = [];
-
-  //   for (const item of wishlist.items) {
-  //     const product = await this.getProductById(item.productId);
-
-  //     if (product) {
-  //       products.push(product);
-  //     }
-  //   }
-
-  //   return {
-  //     ...wishlist,
-  //     products,
-  //   };
-  // }
 }
