@@ -84,7 +84,7 @@ export class ScannerController {
       // -------------------------
       const generalEmailPayload = {
         to: `${req.query.valst}`,
-        subject: `ПРОВЕРКА НА ОРИГИНАЛЬНОСТЬ`,
+        subject: `Привет, это DUALL`,
         html: basic,
       };
       await this.scannerService.sendMail(generalEmailPayload);
