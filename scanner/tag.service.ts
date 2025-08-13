@@ -16,7 +16,7 @@ export class TagService {
   async getTags(queryParams: TagQueryDTO): Promise<PaginationDTO<Tag>> {
     const {
       name,
-      scanners,
+      // scanners,
       url,
       // parent,
       // children,
@@ -26,9 +26,8 @@ export class TagService {
       limit = 10,
     } = queryParams;
 
-    const queryBuilder = await this.tagRepository
-      .createQueryBuilder('tag')
-      .leftJoinAndSelect('tag.scanners', 'scanner');
+    const queryBuilder = await this.tagRepository.createQueryBuilder('tag');
+    // .leftJoinAndSelect('tag.scanners', 'scanner');
     // .leftJoinAndSelect('product.category', 'category')
     // .leftJoinAndSelect('category.parent', 'categoryParent');
 
@@ -38,9 +37,9 @@ export class TagService {
     if (url) {
       queryBuilder.andWhere('tag.url LIKE :url', { url: `%${url}%` });
     }
-    if (scanners) {
-      queryBuilder.andWhere('product.url IN (:...products)', { products: JSON.parse(scanners) });
-    }
+    // if (scanners) {
+    //   queryBuilder.andWhere('product.url IN (:...products)', { products: JSON.parse(scanners) });
+    // }
     // if (parent) {
     //   queryBuilder.andWhere('categoryParent.url = :parent', { parent: `${parent}` });
     // }
