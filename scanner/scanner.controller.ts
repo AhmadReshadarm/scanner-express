@@ -11,7 +11,10 @@ import { EmptyEmail, genuineEmail, notGenuinEmail } from './generateEmail';
 @singleton()
 @Controller('/scanner')
 export class ScannerController {
-  constructor(private scannerService: WishlistService, private tagService: TagService) {}
+  constructor(
+    private scannerService: WishlistService,
+    private tagService: TagService,
+  ) {}
 
   @Get()
   // @Middleware([verifyToken, isAdmin])
@@ -29,7 +32,7 @@ export class ScannerController {
   async createScanners(req: Request, resp: Response) {
     const { tags } = req.body;
     try {
-      const newScanner = await validation(new Scanner(req.body));
+      const newScanner = req.body; // await validation(new Scanner(req.body));
       tags ? (newScanner.tags = await this.tagService.getTagsByIds(tags.map((tag: Tag) => String(tag)))) : null;
       const created = await this.scannerService.createScanner(newScanner);
 
