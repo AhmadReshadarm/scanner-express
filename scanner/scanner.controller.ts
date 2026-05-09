@@ -118,7 +118,7 @@ export class ScannerController {
   async getCodeByScanne(req: Request, resp: Response) {
     const { code } = req.params;
     try {
-      const isValid = await this.scannerService.getFummaCode(code);
+      const isValid = await this.scannerService.getFummaCode(Number(code));
       if (!isValid) {
         resp.status(HttpStatus.FORBIDDEN).json({ message: 'not a valid code' });
         return;
