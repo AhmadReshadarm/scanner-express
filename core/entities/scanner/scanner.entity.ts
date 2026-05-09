@@ -12,14 +12,18 @@ export class Scanner {
   @Column()
   barCode: string;
 
+  @Column({ default: 0 })
+  query_count: number;
+
   @ManyToMany(() => Tag, tag => tag.scanners, { cascade: true, nullable: true })
   @JoinTable()
   tags?: Tag[];
 
-  constructor(args?: { qrCode: string; barCode: string; tags?: Tag[] }) {
+  constructor(args?: { qrCode: string; barCode: string; query_count: number; tags?: Tag[] }) {
     if (args) {
       this.qrCode = args.qrCode;
       this.barCode = args.barCode;
+      this.query_count = args.query_count;
       this.tags = args.tags;
     }
   }

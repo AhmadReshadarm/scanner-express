@@ -26,6 +26,7 @@ export interface ScannerDTO {
   id: string;
   qrCode: string;
   barCode: string;
+  query_count: number;
 }
 
 export interface ScannerQueryDTO {

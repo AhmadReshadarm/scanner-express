@@ -60,8 +60,12 @@ export class WishlistService {
     return await this.scannerRepository.findOne({ where: { barCode: valmod } });
   }
 
-  async getScannbyBardCode(code: string) {
+  async getScannbyBarCode(code: string) {
     return await this.scannerRepository.findOne({ where: { qrCode: Equal(`https://daull.ru/?code=${code}`) } });
+  }
+
+  async getFummaCode(code: number) {
+    return await this.scannerRepository.findOne({ where: { qrCode: Equal(`https://fummo.ru/check?code=${code}`) } });
   }
 
   async sendMail(options: MailOptionsDTO) {

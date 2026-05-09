@@ -103,12 +103,36 @@ export class ScannerController {
     const { code } = req.body;
 
     try {
-      const isValid = await this.scannerService.getScannbyBardCode(code);
+      const isValid = await this.scannerService.getScannbyBarCode(code);
       if (!isValid) {
         resp.status(HttpStatus.FORBIDDEN).json({ message: 'not a valid code' });
         return;
       }
       resp.status(HttpStatus.OK).json({ message: 'code is genuine' });
+    } catch (error) {
+      resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+  }
+
+  @Get(':code')
+  async getCodeByScanne(req: Request, resp: Response) {
+    const { code } = req.params;
+    try {
+      const isValid = await this.scannerService.getFummaCode(code);
+      if (!isValid) {
+        resp.status(HttpStatus.FORBIDDEN).json({ message: 'not a valid code' });
+        return;
+      }
+      const newData = {
+        ...isValid,
+        query_count: isValid.query_count + 1,
+      };
+      const updated = await this.scannerService.updateScanner(isValid.id, newData);
+      const responseData = {
+        code: updated.barCode,
+        query_count: updated.query_count,
+      };
+      resp.status(HttpStatus.OK).json(responseData);
     } catch (error) {
       resp.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
